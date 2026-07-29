@@ -1,0 +1,63 @@
+﻿<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fotos | Valizas Hostel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body data-page="galeria" class="page-inner">
+    <div id="site-header"></div>
+    <main id="main">
+      <section class="page-hero">
+        <div class="container reveal">
+          <p class="section-eyebrow" data-i18n="page.galeria.eyebrow">@hostelvalizas</p>
+          <h1 data-i18n="page.galeria.title">La vida en el hostel, en imágenes</h1>
+          <p data-i18n="page.galeria.lead">Habitaciones, eventos, atardeceres y novedades en tiempo real.</p>
+        </div>
+      </section>
+      <section class="gallery section">
+        <div class="container">
+          <div class="gallery-grid reveal">
+            <button type="button" class="gallery-item g1" aria-label="Foto 1"></button>
+            <button type="button" class="gallery-item g2" aria-label="Foto 2"></button>
+            <button type="button" class="gallery-item g3" aria-label="Foto 3"></button>
+            <button type="button" class="gallery-item g4" aria-label="Foto 4"></button>
+            <button type="button" class="gallery-item g5" aria-label="Foto 5"></button>
+          </div>
+          <div class="ig-live reveal" style="margin-top: 2.5rem">
+            <iframe
+              class="ig-embed"
+              title="Instagram @hostelvalizas"
+              src="https://www.instagram.com/hostelvalizas/embed"
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              allowtransparency="true"
+            ></iframe>
+            <div>
+              <p class="section-eyebrow">@hostelvalizas</p>
+              <h2>Desde Instagram</h2>
+              <p>Seguinos para eventos, atardeceres y novedades del hostel.</p>
+              <div class="ig-grid" id="ig-grid"></div>
+              <div class="gallery-cta" style="margin-top: 1.25rem">
+                <a
+                  class="btn btn-instagram btn-lg"
+                  href="https://www.instagram.com/hostelvalizas/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  data-i18n="page.galeria.cta"
+                  >Abrir Instagram</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <div id="site-footer"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

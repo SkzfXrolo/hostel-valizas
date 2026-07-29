@@ -1,0 +1,116 @@
+﻿<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Tarifas por temporada Valizas Hostel. Cotizá por WhatsApp según fechas y habitación." />
+    <title>Tarifas | Valizas Hostel</title>
+    <meta property="og:title" content="Tarifas | Valizas Hostel" />
+    <meta property="og:description" content="Consultá tarifas por temporada y pedí cotización por WhatsApp." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body data-page="tarifas" class="page-inner">
+    <div id="site-header"></div>
+    <main id="main">
+      <section class="page-hero">
+        <div class="container reveal">
+          <p class="section-eyebrow" data-i18n="page.tarifas.eyebrow">Tarifas</p>
+          <h1 data-i18n="page.tarifas.title">Elegí fechas y conocé la temporada</h1>
+          <p data-i18n="page.tarifas.lead">Los precios cambian según época del año.</p>
+        </div>
+      </section>
+
+      <section class="section section-muted">
+        <div class="container">
+          <header class="section-head reveal">
+            <h2 data-i18n="rates.title">Grilla orientativa (USD / noche)</h2>
+            <p data-i18n="rates.lead">Valores de referencia. La cotización final se confirma por WhatsApp.</p>
+          </header>
+          <div id="rates-table" class="reveal"></div>
+        </div>
+      </section>
+
+      <section class="pricing section">
+        <div class="container pricing-layout pricing-layout--single">
+          <div class="pricing-panel reveal">
+            <h3 data-i18n="pricing.quoteTitle">Pedir cotización</h3>
+            <form class="date-form" id="date-form">
+              <div class="field">
+                <label for="room-type" data-i18n="pricing.room">Tipo de habitación</label>
+                <select id="room-type" name="room-type">
+                  <option value="suite" data-i18n="room.suite.name">Suite privada</option>
+                  <option value="doble-privada" selected data-i18n="room.doble.name">Habitación doble</option>
+                  <option value="dorm-4" data-i18n="room.dorm4.name">Dormitorio 4</option>
+                  <option value="dorm-6" data-i18n="room.dorm6.name">Dormitorio 6</option>
+                  <option value="dorm-8" data-i18n="room.dorm8.name">Dormitorio 8</option>
+                  <option value="dorm-12" data-i18n="room.dorm12.name">Dormitorio 12</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="check-in" data-i18n="pricing.in">Entrada</label>
+                <input type="date" id="check-in" name="check-in" required />
+              </div>
+              <div class="field">
+                <label for="check-out" data-i18n="pricing.out">Salida</label>
+                <input type="date" id="check-out" name="check-out" required />
+              </div>
+              <div class="field">
+                <label for="guests" data-i18n="pricing.guests">Huéspedes</label>
+                <select id="guests" name="guests">
+                  <option value="1" data-i18n="pricing.g1">1 persona</option>
+                  <option value="2" selected data-i18n="pricing.g2">2 personas</option>
+                  <option value="3" data-i18n="pricing.g3">3 personas</option>
+                  <option value="4" data-i18n="pricing.g4">4 personas</option>
+                  <option value="5" data-i18n="pricing.g5">5+ personas</option>
+                </select>
+              </div>
+              <div class="field field-full">
+                <label for="quote-name" data-i18n="pricing.name">Nombre</label>
+                <input id="quote-name" name="name" type="text" maxlength="60" data-i18n-placeholder="reviews.form.namePh" />
+              </div>
+              <div class="field field-full">
+                <label for="quote-note" data-i18n="pricing.noteLabel">Comentario (opcional)</label>
+                <textarea id="quote-note" name="note" rows="2" maxlength="300"></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary" data-i18n="pricing.calc">Calcular referencia</button>
+            </form>
+
+            <div class="currency-tip reveal">
+              <strong>USD / UYU</strong>
+              <span data-i18n="rates.fx">Tip aproximado: 1 USD ≈ 42 UYU (sujeto a cambio). Cotización final en WhatsApp.</span>
+            </div>
+
+            <div class="season-legend">
+              <span data-season="alta"><i></i> <span data-i18n="pricing.legend.alta">Temporada alta</span></span>
+              <span data-season="media"><i></i> <span data-i18n="pricing.legend.media">Temporada media</span></span>
+              <span data-season="baja"><i></i> <span data-i18n="pricing.legend.baja">Temporada baja</span></span>
+              <span class="legend-blocked"><i></i> <span data-i18n="pricing.blocked">Ocupado (demo)</span></span>
+            </div>
+
+            <div class="pricing-result" id="pricing-result" hidden>
+              <p class="result-season" id="result-season"></p>
+              <p class="result-range" id="result-range"></p>
+              <p class="result-uyu" id="result-uyu"></p>
+              <p class="result-note" data-i18n="pricing.note">Tarifas orientativas en USD.</p>
+              <a class="btn btn-primary btn-lg" id="result-wa" href="#" data-wa-context="tarifas" data-i18n="pricing.ask">Pedir cotización exacta por WhatsApp</a>
+            </div>
+
+            <div class="calendar-wrap">
+              <div class="calendar-header">
+                <button type="button" class="cal-nav" id="cal-prev" data-i18n-aria="pricing.prev" aria-label="Mes anterior">‹</button>
+                <h3 id="cal-title"></h3>
+                <button type="button" class="cal-nav" id="cal-next" data-i18n-aria="pricing.next" aria-label="Mes siguiente">›</button>
+              </div>
+              <div class="calendar" id="calendar"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <div id="site-footer"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

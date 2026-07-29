@@ -1,0 +1,74 @@
+﻿<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reseñas | Valizas Hostel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body data-page="resenas" class="page-inner">
+    <div id="site-header"></div>
+    <main id="main">
+      <section class="page-hero">
+        <div class="container reveal">
+          <p class="section-eyebrow" data-i18n="page.resenas.eyebrow">Opiniones</p>
+          <h1 data-i18n="page.resenas.title">Lo que dicen quienes se quedan</h1>
+          <p data-i18n="page.resenas.lead">Mostramos primero las reseñas más recientes y positivas.</p>
+        </div>
+      </section>
+      <section class="reviews section section-muted">
+        <div class="container">
+          <div class="google-rating reveal">
+            <div class="google-rating-badge">
+              <span class="google-g" aria-hidden="true">G</span>
+              <div>
+                <p class="google-rating-label">Google</p>
+                <p class="google-rating-score">
+                  <span id="google-score">4.2</span>
+                  <span class="google-stars" id="google-stars">★★★★☆</span>
+                </p>
+                <p class="google-rating-count" id="google-count">180+ reseñas</p>
+              </div>
+            </div>
+            <a class="btn btn-secondary" href="https://www.google.com/maps/search/?api=1&query=Valizas+Hostel+Barra+de+Valizas+Uruguay" target="_blank" rel="noopener noreferrer" data-i18n="reviews.form.maps">Ver en Google Maps</a>
+          </div>
+          <div class="reviews-list" id="reviews-list"></div>
+          <div class="review-form-wrap reveal">
+            <h3 data-i18n="reviews.form.title">Dejá tu reseña</h3>
+            <p class="review-form-lead" data-i18n="reviews.form.lead">Contanos tu experiencia.</p>
+            <form class="review-form" id="review-form">
+              <div class="field">
+                <label for="review-name" data-i18n="reviews.form.name">Nombre</label>
+                <input id="review-name" name="name" type="text" maxlength="40" data-i18n-placeholder="reviews.form.namePh" placeholder="Tu nombre" />
+              </div>
+              <div class="field">
+                <label for="review-rating" data-i18n="reviews.form.rating">Puntuación</label>
+                <select id="review-rating" name="rating">
+                  <option value="5" selected data-i18n="reviews.r5">5 — Excelente</option>
+                  <option value="4" data-i18n="reviews.r4">4 — Muy bueno</option>
+                  <option value="3" data-i18n="reviews.r3">3 — Bien</option>
+                  <option value="2" data-i18n="reviews.r2">2 — Regular</option>
+                  <option value="1" data-i18n="reviews.r1">1 — Malo</option>
+                </select>
+              </div>
+              <div class="field field-full">
+                <label for="review-text" data-i18n="reviews.form.text">Tu experiencia</label>
+                <textarea id="review-text" name="text" rows="4" required maxlength="600" data-i18n-placeholder="reviews.form.textPh" placeholder="¿Qué te gustó del hostel…?"></textarea>
+              </div>
+              <div class="review-form-actions">
+                <button type="submit" class="btn btn-primary" data-i18n="reviews.form.submit">Publicar en la web</button>
+                <a class="btn btn-secondary" href="https://www.google.com/maps/search/?api=1&query=Valizas+Hostel+Barra+de+Valizas+Uruguay" target="_blank" rel="noopener noreferrer" data-i18n="reviews.form.google">Dejar reseña en Google</a>
+              </div>
+              <p class="review-form-status" id="review-form-status" hidden></p>
+            </form>
+          </div>
+        </div>
+      </section>
+    </main>
+    <div id="site-footer"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,28 @@
+{
+  "rewrites": [
+    { "source": "/nosotros", "destination": "/nosotros.html" },
+    { "source": "/habitaciones", "destination": "/habitaciones.html" },
+    { "source": "/experiencias", "destination": "/experiencias.html" },
+    { "source": "/tarifas", "destination": "/tarifas.html" },
+    { "source": "/galeria", "destination": "/galeria.html" },
+    { "source": "/resenas", "destination": "/resenas.html" },
+    { "source": "/ubicacion", "destination": "/ubicacion.html" },
+    { "source": "/faq", "destination": "/faq.html" },
+    { "source": "/ficha", "destination": "/ficha.html" },
+    { "source": "/admin", "destination": "/admin.html" }
+  ],
+  "redirects": [
+    { "source": "/nosotros.html", "destination": "/nosotros", "permanent": true },
+    { "source": "/habitaciones.html", "destination": "/habitaciones", "permanent": true },
+    { "source": "/experiencias.html", "destination": "/experiencias", "permanent": true },
+    { "source": "/tarifas.html", "destination": "/tarifas", "permanent": true },
+    { "source": "/galeria.html", "destination": "/galeria", "permanent": true },
+    { "source": "/resenas.html", "destination": "/resenas", "permanent": true },
+    { "source": "/ubicacion.html", "destination": "/ubicacion", "permanent": true },
+    { "source": "/faq.html", "destination": "/faq", "permanent": true },
+    { "source": "/ficha.html", "destination": "/ficha", "permanent": true },
+    { "source": "/admin.html", "destination": "/admin", "permanent": true }
+  ],
+  "cleanUrls": true,
+  "trailingSlash": false
+}

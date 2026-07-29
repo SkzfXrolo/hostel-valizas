@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="description" content="Panel de administración Valizas Hostel" />
+    <title>Admin | Valizas Hostel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Outfit:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body data-page="admin" class="page-inner page-admin">
+    <header class="admin-top">
+      <a class="logo" href="/">
+        <span class="logo-mark">V</span>
+        <span class="logo-text">Valizas · Admin</span>
+      </a>
+      <div class="admin-top-actions">
+        <a class="btn btn-secondary btn-sm" href="/tarifas">Ver sitio</a>
+        <button type="button" class="btn btn-secondary btn-sm" id="btn-logout" hidden>Salir</button>
+      </div>
+    </header>
+
+    <main id="main" class="admin-main">
+      <p id="admin-status" class="admin-status" hidden></p>
+
+      <section id="admin-login" class="admin-login">
+        <h1>Panel del hostel</h1>
+        <p>Editá tarifas, fechas ocupadas y reseñas sin tocar código.</p>
+        <form id="login-form" class="admin-card">
+          <label>
+            Contraseña
+            <input id="admin-pass" type="password" autocomplete="current-password" required />
+          </label>
+          <button type="submit" class="btn btn-primary">Entrar</button>
+          <p class="admin-muted">Por defecto: <code>valizas</code> — cambiala al entrar.</p>
+        </form>
+      </section>
+
+      <section id="admin-app" hidden>
+        <div class="admin-toolbar">
+          <div>
+            <h1>Contenido editable</h1>
+            <p id="updated-at" class="admin-muted"></p>
+          </div>
+          <div class="admin-toolbar-actions">
+            <button type="button" class="btn btn-primary" id="btn-save">Guardar</button>
+            <button type="button" class="btn btn-secondary" id="btn-export">Descargar content.json</button>
+            <button type="button" class="btn btn-secondary" id="btn-import">Importar JSON</button>
+            <button type="button" class="btn btn-ghost-dark" id="btn-reset">Reset local</button>
+            <input id="import-file" type="file" accept="application/json,.json" hidden />
+          </div>
+        </div>
+
+        <div class="admin-note">
+          <strong>Cómo funciona:</strong> Guardar aplica los cambios en este navegador al instante.
+          Para que todos los visitantes los vean, descargá <code>content.json</code>, reemplazá
+          <code>public/content.json</code> y redesplegá (o pedile a quien maneja el sitio).
+        </div>
+
+        <section class="admin-card">
+          <h2>Google &amp; tip de cambio</h2>
+          <div class="admin-fields-3">
+            <label>Score Google <input id="google-score" type="number" min="1" max="5" step="0.1" /></label>
+            <label>Cantidad reseñas <input id="google-count" type="number" min="0" step="1" /></label>
+            <label>USD → UYU <input id="usd-uyu" type="number" min="1" step="1" /></label>
+          </div>
+        </section>
+
+        <section class="admin-card">
+          <h2>Tarifas por mes (USD / noche)</h2>
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Mes</th>
+                  <th>Temporada</th>
+                  <th>Suite min–max</th>
+                  <th>Doble min–max</th>
+                  <th>Dorm min–max</th>
+                </tr>
+              </thead>
+              <tbody id="rates-editor"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="admin-card">
+          <h2>Fechas ocupadas</h2>
+          <p class="admin-muted">Una fecha por línea, formato YYYY-MM-DD</p>
+          <textarea id="blocked-dates" rows="8" spellcheck="false"></textarea>
+        </section>
+
+        <section class="admin-card">
+          <div class="admin-card-head">
+            <h2>Reseñas curadas</h2>
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-add-review">+ Agregar</button>
+          </div>
+          <div id="reviews-editor" class="admin-reviews"></div>
+        </section>
+
+        <section class="admin-card">
+          <h2>Reseñas enviadas por la web</h2>
+          <div id="guest-reviews"></div>
+        </section>
+
+        <section class="admin-card">
+          <h2>Cambiar contraseña</h2>
+          <form id="password-form" class="admin-fields-3">
+            <label>Nueva <input id="new-pass" type="password" autocomplete="new-password" /></label>
+            <label>Repetir <input id="new-pass2" type="password" autocomplete="new-password" /></label>
+            <div class="admin-field-action">
+              <button type="submit" class="btn btn-secondary">Actualizar</button>
+            </div>
+          </form>
+          <p class="admin-muted">La contraseña nueva se guarda solo en este navegador.</p>
+        </section>
+      </section>
+    </main>
+
+    <script type="module" src="/src/admin.js"></script>
+  </body>
+</html>

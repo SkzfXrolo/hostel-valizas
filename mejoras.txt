@@ -1,0 +1,59 @@
+Valizas Hostel — 30 posibles mejoras
+====================================
+Para implementar esta noche (orden sugerido: impacto / esfuerzo).
+
+DISEÑO & EXPERIENCIA
+--------------------
+1. Lightbox al hacer clic en fotos del carrusel inmersivo y de la galería.
+2. Video corto de fondo o loop sutil en el hero (dunas / pileta), con fallback a foto.
+3. Animación de entrada más rica en el hero (texto escalonado + fade del forro).
+4. Modo “oscuro playa noche” opcional (toggle) para contraste con el look diurno.
+5. Mejor tipografía responsive: tamaños y line-height afinados en mobile.
+6. Microinteracciones en botones y cards (hover/press más pulidos, sin exagerar).
+7. Favicon + Open Graph / preview al compartir el link (WhatsApp, Instagram bio).
+8. Página 404 custom con CTA a WhatsApp y a la home.
+
+CONTENIDO & CONVERSIÓN
+----------------------
+9. Nombres reales de los dueños en Nosotros + bio corta en 1–2 líneas.
+10. FAQ (check-in, mascotas, desayuno, estacionamiento, cómo llegar de Montevideo).
+11. Bloque “Ideal para…” (parejas / mochileros / familias / LGBTQ+).
+12. Testimonios con foto de huésped (si hay permiso) o avatar + origen (AR/BR/UY).
+13. CTA sticky mobile más claro: “Reservar” + “Instagram” juntos.
+14. Mensajes de WhatsApp prearmados por página (habitación / tarifas / dunas).
+15. Contador suave de temporada (“Quedan X días de temporada alta”) solo orientativo.
+
+TARIFAS & RESERVAS
+------------------
+16. Tabla real de tarifas por mes/habitación (datos del dueño) en vez de estimados.
+17. Selector de tipo de habitación en Tarifas antes de cotizar.
+18. Calendario con bloqueo visual de fechas ya ocupadas (si comparten disponibilidad).
+19. Formulario “pedir cotización” que abra WhatsApp con todos los campos armados.
+20. Mostrar moneda UYU / USD con tip de cambio aproximado (disclaimer).
+
+FOTOS & MEDIOS
+--------------
+21. Reemplazar todos los placeholders restantes por fotos reales del Instagram/carpeta.
+22. Fotos específicas por cada tipo de dormitorio (4/6/8/12) y suite.
+23. Antes/después o “tour” de espacios (pileta, Bora Beer, co-living).
+24. Embed o grid vivo de Instagram (API o widget) en Galería.
+25. Compresión WebP/AVIF de assets para cargar más rápido en 3G.
+
+TÉCNICA & SEO
+-------------
+26. URLs limpias sin .html (/nosotros, /tarifas) con rewrites en Vercel.
+27. Meta titles/descriptions únicos por página + schema.org Hotel/Hostel.
+28. Sitemap.xml + robots.txt.
+29. Lazy-load estricto + precarga solo del hero para Lighthouse > 90.
+30. Analytics liviano (Plausible/Umami o GA4) + evento “click WhatsApp”.
+
+BONUS (si sobra tiempo)
+-----------------------
+- Mapa con pins: playa, terminal, feria, inicio dunas Cabo Polonio.
+- Versión printable “ficha del hostel” PDF para el dueño.
+- Panel mínimo admin (Airtable/Notion) para editar reseñas y tarifas sin tocar código.
+
+Notas
+-----
+- Priorizar 9, 10, 16, 21, 26, 27, 30: dan más “producto terminado” para mostrar al dueño.
+- Traer de su parte: nombres, tarifas reales, más fotos de habitaciones, Place ID de Google.
