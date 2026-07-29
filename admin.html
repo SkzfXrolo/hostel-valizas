@@ -35,10 +35,12 @@
         <form id="login-form" class="admin-card">
           <label>
             Contraseña
-            <input id="admin-pass" type="password" autocomplete="current-password" required />
+            <input id="admin-pass" type="password" autocomplete="current-password" required minlength="8" />
           </label>
           <button type="submit" class="btn btn-primary">Entrar</button>
-          <p class="admin-muted">Por defecto: <code>valizas</code> — cambiala al entrar.</p>
+          <p class="admin-muted">
+            La contraseña se configura en el servidor (<code>ADMIN_PASSWORD</code>). Sesión de 4 horas.
+          </p>
         </form>
       </section>
 
@@ -110,15 +112,12 @@
         </section>
 
         <section class="admin-card">
-          <h2>Cambiar contraseña</h2>
-          <form id="password-form" class="admin-fields-3">
-            <label>Nueva <input id="new-pass" type="password" autocomplete="new-password" /></label>
-            <label>Repetir <input id="new-pass2" type="password" autocomplete="new-password" /></label>
-            <div class="admin-field-action">
-              <button type="submit" class="btn btn-secondary">Actualizar</button>
-            </div>
-          </form>
-          <p class="admin-muted">La contraseña nueva se guarda solo en este navegador.</p>
+          <h2>Seguridad</h2>
+          <p class="admin-muted">
+            La contraseña vive solo en variables de entorno del servidor (<code>ADMIN_PASSWORD</code> /
+            <code>ADMIN_SESSION_SECRET</code>). No se guarda en el navegador ni en el código del sitio.
+            Para cambiarla, actualizá las env vars en Vercel y redesplegá.
+          </p>
         </section>
       </section>
     </main>

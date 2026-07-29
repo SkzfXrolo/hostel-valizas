@@ -87,7 +87,6 @@ export function mountShell() {
           <a href="/tarifas" data-i18n="nav.tarifas">${t('nav.tarifas')}</a>
           <a href="/faq" data-i18n="nav.faq">${t('nav.faq')}</a>
           <a href="/ficha">Ficha</a>
-          <a href="/admin" class="footer-admin">Admin</a>
           <a href="https://www.instagram.com/hostelvalizas/" target="_blank" rel="noopener">Instagram</a>
           <a href="https://wa.me/59894925782" data-wa-context="${waContext}" target="_blank" rel="noopener">WhatsApp</a>
         </div>

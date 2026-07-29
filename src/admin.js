@@ -5,10 +5,8 @@ import {
   saveLocalContent,
   clearLocalContent,
   downloadJson,
-  verifyPassword,
-  setPassword,
-  isAdminSession,
-  startAdminSession,
+  loginAdmin,
+  verifyAdminSession,
   endAdminSession,
   loadGuestReviews,
   saveGuestReviews,
@@ -240,13 +238,17 @@ function wire() {
   $('#login-form')?.addEventListener('submit', async (e) => {
     e.preventDefault()
     const pass = $('#admin-pass').value
-    const ok = await verifyPassword(pass)
-    if (!ok) {
-      status('Contraseña incorrecta', false)
-      return
+    const btn = e.target.querySelector('button[type="submit"]')
+    if (btn) btn.disabled = true
+    try {
+      await loginAdmin(pass)
+      $('#admin-pass').value = ''
+      await openPanel()
+    } catch (err) {
+      status(err?.message || 'Contraseña incorrecta', false)
+    } finally {
+      if (btn) btn.disabled = false
     }
-    startAdminSession()
-    await openPanel()
   })
 
   $('#btn-logout')?.addEventListener('click', () => {
@@ -322,29 +324,12 @@ function wire() {
     })
     renderReviewsEditor()
   })
-
-  $('#password-form')?.addEventListener('submit', async (e) => {
-    e.preventDefault()
-    const a = $('#new-pass').value
-    const b = $('#new-pass2').value
-    if (a.length < 4) {
-      status('Mínimo 4 caracteres', false)
-      return
-    }
-    if (a !== b) {
-      status('Las contraseñas no coinciden', false)
-      return
-    }
-    await setPassword(a)
-    $('#new-pass').value = ''
-    $('#new-pass2').value = ''
-    status('Contraseña actualizada (solo en este navegador)')
-  })
 }
 
 async function init() {
   wire()
-  if (isAdminSession()) await openPanel()
+  const ok = await verifyAdminSession()
+  if (ok) await openPanel()
 }
 
 init()

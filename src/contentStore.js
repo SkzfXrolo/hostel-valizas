@@ -1,6 +1,7 @@
 export const ADMIN_CONTENT_KEY = 'valizas-admin-content'
 export const ADMIN_SESSION_KEY = 'valizas-admin-session'
-const PASSWORD_HASH_KEY = 'valizas-admin-pass-hash'
+export const ADMIN_TOKEN_KEY = 'valizas-admin-token'
+export const ADMIN_TOKEN_EXP_KEY = 'valizas-admin-token-exp'
 
 /** Defaults shipped with the site — admin overrides via localStorage / content.json */
 export const DEFAULTS = {
@@ -235,34 +236,99 @@ export async function sha256(text) {
   return [...new Uint8Array(hash)].map((b) => b.toString(16).padStart(2, '0')).join('')
 }
 
-export async function getPasswordHash() {
-  const stored = localStorage.getItem(PASSWORD_HASH_KEY)
-  if (stored) return stored
-  return sha256('valizas')
+export async function loginAdmin(password) {
+  const res = await fetch('/api/admin-login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password }),
+    cache: 'no-store',
+  })
+  let data = {}
+  try {
+    data = await res.json()
+  } catch {
+    data = {}
+  }
+  if (!res.ok || !data.ok || !data.token) {
+    const err = new Error(data.error || 'Contraseña incorrecta')
+    err.status = res.status
+    throw err
+  }
+  sessionStorage.setItem(ADMIN_TOKEN_KEY, data.token)
+  sessionStorage.setItem(ADMIN_TOKEN_EXP_KEY, String(data.exp || ''))
+  sessionStorage.setItem(ADMIN_SESSION_KEY, '1')
+  return data
 }
 
-export async function setPassword(newPassword) {
-  const hash = await sha256(newPassword)
-  localStorage.setItem(PASSWORD_HASH_KEY, hash)
-  return hash
+export async function verifyAdminSession() {
+  const token = sessionStorage.getItem(ADMIN_TOKEN_KEY)
+  const exp = Number(sessionStorage.getItem(ADMIN_TOKEN_EXP_KEY) || 0)
+  if (!token) return false
+  if (exp && Date.now() > exp) {
+    endAdminSession()
+    return false
+  }
+  try {
+    const res = await fetch('/api/admin-verify', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ token }),
+      cache: 'no-store',
+    })
+    if (!res.ok) {
+      endAdminSession()
+      return false
+    }
+    const data = await res.json()
+    if (!data.ok) {
+      endAdminSession()
+      return false
+    }
+    sessionStorage.setItem(ADMIN_SESSION_KEY, '1')
+    return true
+  } catch {
+    // Offline / API down: do not keep a forged client-only session
+    endAdminSession()
+    return false
+  }
 }
 
+/** @deprecated Prefer loginAdmin — kept for older imports */
 export async function verifyPassword(password) {
-  const hash = await sha256(password)
-  const expected = await getPasswordHash()
-  return hash === expected
+  try {
+    await loginAdmin(password)
+    return true
+  } catch {
+    return false
+  }
+}
+
+export async function setPassword() {
+  throw new Error('La contraseña se configura con ADMIN_PASSWORD en el servidor (Vercel / .env.local).')
 }
 
 export function isAdminSession() {
-  return sessionStorage.getItem(ADMIN_SESSION_KEY) === '1'
+  return Boolean(sessionStorage.getItem(ADMIN_TOKEN_KEY)) && sessionStorage.getItem(ADMIN_SESSION_KEY) === '1'
+}
+
+export function getAdminToken() {
+  return sessionStorage.getItem(ADMIN_TOKEN_KEY) || ''
 }
 
 export function startAdminSession() {
-  sessionStorage.setItem(ADMIN_SESSION_KEY, '1')
+  // Token is set by loginAdmin; keep flag for UI gating
+  if (sessionStorage.getItem(ADMIN_TOKEN_KEY)) {
+    sessionStorage.setItem(ADMIN_SESSION_KEY, '1')
+  }
 }
 
 export function endAdminSession() {
   sessionStorage.removeItem(ADMIN_SESSION_KEY)
+  sessionStorage.removeItem(ADMIN_TOKEN_KEY)
+  sessionStorage.removeItem(ADMIN_TOKEN_EXP_KEY)
 }
 
 export function downloadJson(filename, data) {
