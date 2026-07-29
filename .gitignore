@@ -29,6 +29,7 @@ cookies-instagram.txt
 *.cookies.txt
 .env
 .env.*
+!.env.example
 
 # Source dumps (organized copies live under public/assets/home|gallery|brand|…)
 public/assets/wa/
