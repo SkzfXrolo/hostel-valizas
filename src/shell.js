@@ -5,7 +5,8 @@ const NAV = [
   { href: '/nosotros', key: 'nav.nosotros', id: 'nosotros' },
   { href: '/habitaciones', key: 'nav.habitaciones', id: 'habitaciones' },
   { href: '/experiencias', key: 'nav.experiencias', id: 'experiencias' },
-  { href: '/tarifas', key: 'nav.tarifas', id: 'tarifas' },
+  { href: '/sushi', key: 'nav.sushi', id: 'sushi' },
+  // Tarifas oculto de momento — página /tarifas sigue existiendo
   { href: '/resenas', key: 'nav.resenas', id: 'resenas' },
   { href: '/galeria', key: 'nav.galeria', id: 'galeria' },
   { href: '/faq', key: 'nav.faq', id: 'faq' },
@@ -17,6 +18,7 @@ const WA_BY_PAGE = {
   habitaciones: 'habitaciones',
   tarifas: 'tarifas',
   experiencias: 'dunas',
+  sushi: 'sushi',
   galeria: 'general',
   nosotros: 'general',
   resenas: 'general',
@@ -60,8 +62,24 @@ export function mountShell() {
         <div class="header-actions">
           <button type="button" class="theme-toggle" data-theme-toggle aria-pressed="false" title="Modo noche">☾</button>
           ${langSwitchHtml()}
+          <img
+            class="header-rocha"
+            src="/assets/brand/rocha-aqui-estas-bien.webp"
+            alt="Rocha — aquí estás bien"
+            width="72"
+            height="68"
+            decoding="async"
+          />
           <a class="btn btn-primary btn-sm header-cta" data-wa="general" data-wa-context="${waContext}" href="#" data-i18n="cta.reservar">${t('cta.reservar')}</a>
         </div>
+        <img
+          class="header-rocha header-rocha--mobile"
+          src="/assets/brand/rocha-aqui-estas-bien.webp"
+          alt="Rocha — aquí estás bien"
+          width="56"
+          height="54"
+          decoding="async"
+        />
         <button class="nav-toggle" type="button" data-i18n-aria="cta.menu" aria-label="${t('cta.menu')}" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
@@ -84,11 +102,11 @@ export function mountShell() {
         <div class="footer-links">
           <a href="/nosotros" data-i18n="nav.nosotros">${t('nav.nosotros')}</a>
           <a href="/habitaciones" data-i18n="nav.habitaciones">${t('nav.habitaciones')}</a>
-          <a href="/tarifas" data-i18n="nav.tarifas">${t('nav.tarifas')}</a>
+          <a href="/sushi" data-i18n="nav.sushi">${t('nav.sushi')}</a>
           <a href="/faq" data-i18n="nav.faq">${t('nav.faq')}</a>
           <a href="/ficha">Ficha</a>
           <a href="https://www.instagram.com/hostelvalizas/" target="_blank" rel="noopener">Instagram</a>
-          <a href="https://wa.me/59894925782" data-wa-context="${waContext}" target="_blank" rel="noopener">WhatsApp</a>
+          <a href="https://wa.me/59894340425" data-wa-context="${waContext}" target="_blank" rel="noopener">WhatsApp</a>
         </div>
       </div>
     </footer>
@@ -134,7 +152,7 @@ export function mountShell() {
     </div>
     <a
       class="fab-whatsapp"
-      href="https://wa.me/59894925782"
+      href="https://wa.me/59894340425"
       data-wa="general"
       data-wa-context="${waContext}"
       target="_blank"
@@ -199,18 +217,32 @@ export function setupNav() {
   })
 }
 
+let revealIo = null
+
+/** Observe (or re-observe) `.reveal` nodes — safe to call after dynamic re-renders. */
 export function setupReveal() {
-  const els = document.querySelectorAll('.reveal')
-  const io = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible')
-          io.unobserve(entry.target)
-        }
-      })
-    },
-    { threshold: 0.12, rootMargin: '0px 0px -40px 0px' },
-  )
-  els.forEach((el) => io.observe(el))
+  if (!revealIo) {
+    revealIo = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible')
+            revealIo.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' },
+    )
+  }
+
+  const vh = window.innerHeight || 0
+  document.querySelectorAll('.reveal:not(.is-visible)').forEach((el) => {
+    const rect = el.getBoundingClientRect()
+    // Already on screen (e.g. after language switch re-render): show immediately
+    if (rect.top < vh - 40 && rect.bottom > 12) {
+      el.classList.add('is-visible')
+      return
+    }
+    revealIo.observe(el)
+  })
 }

@@ -11,10 +11,10 @@ import { setupSeo } from './seo.js'
 import { isBlocked, getUsdToUyu, renderRatesTable } from './rates.js'
 import { loadRemoteContent } from './contentStore.js'
 
-const WA_NUMBER = '59894925782'
+const WA_NUMBER = '59894340425'
 
 const WA_CONTEXT_MSGS = {
-  general: () => t('wa.hello') + t('wa.thanks'),
+  general: () => t('wa.hello'),
   habitaciones: () => t('wa.ctx.rooms'),
   tarifas: () => t('wa.ctx.rates'),
   dunas: () => t('wa.ctx.dunas'),
@@ -24,21 +24,29 @@ const WA_CONTEXT_MSGS = {
 }
 
 const ROOMS = [
-  { id: 'suite', key: 'suite', type: 'privada', tag: true, features: 4 },
-  { id: 'doble-privada', key: 'doble', type: 'privada', features: 3 },
-  { id: 'dorm-4', key: 'dorm4', type: 'compartida', features: 3 },
-  { id: 'dorm-6', key: 'dorm6', type: 'compartida', features: 2 },
-  { id: 'dorm-8', key: 'dorm8', type: 'compartida', features: 2 },
-  { id: 'dorm-12', key: 'dorm12', type: 'compartida', features: 2 },
+  { id: 'Hab_priv', key: 'habPriv', type: 'privada', tag: true, features: 3, capacity: 2, priceBucket: 'suite' },
+  { id: 'Hab_Dob', key: 'habDob', type: 'privada', features: 3, capacity: 2, priceBucket: 'suite' },
+  { id: 'Hab_Fam', key: 'habFam', type: 'privada', features: 3, capacity: 4, priceBucket: 'suite' },
+  { id: 'Apart_suite_4', key: 'apartSuite4', type: 'privada', tag: true, features: 4, capacity: 4, priceBucket: 'suite' },
+  { id: 'Hab_Priv_2', key: 'habPriv2', type: 'privada', features: 3, capacity: 2, priceBucket: 'doble' },
+  { id: 'Hab_Dob_Priv', key: 'habDobPriv', type: 'privada', features: 2, capacity: 2, priceBucket: 'doble' },
+  { id: 'Hab_Dob_Priv_2', key: 'habDobPriv2', type: 'privada', features: 2, capacity: 2, priceBucket: 'doble' },
+  { id: 'Hab_4', key: 'hab4', type: 'compartida', features: 3, capacity: 4, priceBucket: 'dorm' },
+  { id: 'Hab_Comp_6', key: 'habComp6', type: 'compartida', features: 3, capacity: 6, priceBucket: 'dorm' },
+  { id: 'Hab_Comp_8', key: 'habComp8', type: 'compartida', features: 4, capacity: 8, priceBucket: 'dorm' },
 ]
 
 const PRICE_TABLE = {
-  suite: { alta: [95, 130], media: [75, 105], baja: [60, 85] },
-  'doble-privada': { alta: [75, 110], media: [58, 88], baja: [45, 70] },
-  'dorm-4': { alta: [32, 42], media: [26, 34], baja: [20, 28] },
-  'dorm-6': { alta: [28, 38], media: [22, 30], baja: [18, 24] },
-  'dorm-8': { alta: [26, 36], media: [20, 28], baja: [16, 22] },
-  'dorm-12': { alta: [24, 32], media: [18, 26], baja: [14, 20] },
+  Hab_priv: { alta: [110, 130], media: [80, 100], baja: [60, 80] },
+  Hab_Dob: { alta: [100, 125], media: [75, 95], baja: [58, 78] },
+  Hab_Fam: { alta: [130, 160], media: [95, 125], baja: [75, 100] },
+  Apart_suite_4: { alta: [140, 180], media: [110, 140], baja: [85, 115] },
+  Hab_Priv_2: { alta: [90, 115], media: [70, 95], baja: [50, 72] },
+  Hab_Dob_Priv: { alta: [85, 110], media: [65, 90], baja: [48, 70] },
+  Hab_Dob_Priv_2: { alta: [85, 110], media: [65, 90], baja: [48, 70] },
+  Hab_4: { alta: [30, 40], media: [22, 30], baja: [16, 24] },
+  Hab_Comp_6: { alta: [28, 38], media: [20, 28], baja: [15, 22] },
+  Hab_Comp_8: { alta: [26, 36], media: [18, 26], baja: [14, 20] },
 }
 
 function dateLocale() {
@@ -161,16 +169,17 @@ function dominantSeason(checkIn, checkOut) {
 }
 
 function estimateRange(season, guests, roomId) {
-  const g = Math.min(Math.max(parseInt(guests, 10) || 2, 1), 5)
-  let key = roomId || 'dorm-6'
+  const g = Math.min(Math.max(parseInt(guests, 10) || 2, 1), 8)
+  let key = roomId || 'Hab_Comp_6'
   if (!PRICE_TABLE[key]) {
-    key = 'dorm-6'
-    if (g <= 2) key = 'doble-privada'
-    if (g >= 4) key = 'dorm-4'
+    key = 'Hab_Comp_6'
+    if (g <= 2) key = 'Hab_Dob_Priv'
+    if (g >= 4) key = 'Hab_4'
   }
-  const table = PRICE_TABLE[key][season] || PRICE_TABLE['dorm-6'][season]
+  const table = PRICE_TABLE[key][season] || PRICE_TABLE.Hab_Comp_6[season]
   let [lo, hi] = table
-  if (key.startsWith('dorm')) {
+  const room = ROOMS.find((r) => r.id === key)
+  if (room?.priceBucket === 'dorm') {
     lo *= g
     hi *= g
   }
@@ -390,38 +399,14 @@ function setupWhatsAppLinks() {
   })
 }
 
-function setupSeasonCountdown() {
-  const el = document.getElementById('season-countdown')
-  if (!el) return
-  const banner = el.closest('.season-banner')
-  const now = new Date()
-  const y = now.getFullYear()
-  // Alta: 15 dic – 28 feb
-  let end
-  if (now.getMonth() === 11 && now.getDate() >= 15) {
-    end = new Date(y + 1, 1, 28)
-  } else if (now.getMonth() <= 1) {
-    end = new Date(y, 1, 28)
-  } else {
-    end = new Date(y, 11, 15)
-    el.textContent = t('season.untilHigh', {
-      days: Math.ceil((end - now) / 86400000),
-    })
-    if (banner) banner.hidden = false
-    return
-  }
-  const days = Math.max(0, Math.ceil((end - now) / 86400000))
-  el.textContent = t('season.daysLeft', { days })
-  if (banner) banner.hidden = false
-}
-
 function refreshDynamic() {
   renderRooms()
   if (document.getElementById('calendar')) renderCalendar()
   renderReviews()
   renderRatesTable(document.getElementById('rates-table'), t)
-  setupSeasonCountdown()
   applyI18n()
+  // New `.reveal` nodes start invisible; re-bind observer after lang/content refresh
+  setupReveal()
 }
 
 async function boot() {
@@ -443,7 +428,6 @@ async function boot() {
   setupExperience()
   setupLightbox()
   renderRatesTable(document.getElementById('rates-table'), t)
-  setupSeasonCountdown()
   setupReveal()
   applyI18n()
 }

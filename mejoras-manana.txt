@@ -1,0 +1,219 @@
+================================================================================
+ESTADO 2026-07-29 (repaso rápido: qué ya funciona en código vs qué falta
+dato/decisión real de Leo — no es 100% exhaustivo, es una guía)
+================================================================================
+Leyenda: [OK] implementado y probado en código (con tests en
+         desktop/tests/test_bot_regression.py) · [LEO] el código ya está
+         listo pero necesita un dato/archivo/decisión real del dueño.
+
+DONE EN CÓDIGO (funcionan hoy, aunque algunos con datos de ejemplo):
+  A (bot conversación): 1-15, 17-20 — saludo corto, "solo consulto",
+      2 adultos+1 niño, finde/puente/semana santa, noche del/salgo el,
+      combo grupal, idioma EN/PT, FAQ check-in/out/parking/pileta/mascotas,
+      "3" no se confunde con personas al elegir habitación, resumen diario,
+      pausa por chat, etiquetas de chat, upsell 1 vez, cierre "después aviso".
+  B (fotos): 21, 23-26, 29 — foto correcta por habitación, álbum de casa,
+      compresión <300KB, fallback si falta foto, no repetir foto <10 min,
+      watermark. 22/27 parcial (ver NEED LEO).
+  C (compartidas): 31-33, 35, 37, 38 — panel ocupación, precio p/p, "toda
+      la compartida", lock de escritura al confirmar (BEGIN IMMEDIATE),
+      cancelar libera camas, aviso "reservás camas, no el cuarto".
+  E (app operador): 51-54, 57-59 — pausa global, historial WA, editar antes
+      de mandar, buscar reserva, notificación Windows, estado bridge +
+      reconectar, backup DB.
+  F (reservas/datos): 66-69, 72-74 — teléfono normalizado, sin doble
+      reserva (dedupe por firma+60s), notas internas vs visibles, estados
+      de reserva. 72: desktop/app/voucher.py (voucher HTML+TXT, botón
+      "Exportar voucher" en Operador). 73/74: desktop/app/reminders.py
+      (recordatorio 48h + pedido de reseña), botones manuales en Operador
+      ("Enviar recordatorios pendientes" / "Enviar pedidos de reseña") —
+      nunca se manda solo, hay que tocar el botón.
+  G (IA/Groq): 76-82, 85 — nunca inventa precio/habitación (chequeo de
+      alias en ai_parser + wa_flow), prompts reforzados (máx 2 líneas en
+      dudas, "engine" siempre presente en cada extracción, dates_smart
+      tiene prioridad sobre fechas relativas que adivine la IA), fallback a
+      reglas si Groq falla, ficha ROOM_FACTS como única fuente de verdad
+      para dudas de habitación. 85: suite de ~40 tests de regresión nueva.
+  H (web): 86, 87, 89, 91 — mismos nombres de habitación web/bot, CTA de
+      WhatsApp por habitación con nombre precargado (ya existía en
+      src/main.js vía data-wa-room + se sumó contexto en la CTA general de
+      /habitaciones), FAQ ahora incluye política de cancelación (faq.html +
+      i18n.js), Open Graph (og:title/description/image) agregado a
+      index.html además del que ya inyectaba src/seo.js en runtime.
+  I (operación): 95-97 — cancelación en 1 frase (config.py
+      cancellation_policy + faq.html), horario en que el bot "duerme"
+      (bot_sleep_start/end), número WA único visible (59894340425).
+
+NEED LEO DATA (código listo, falta info/archivo/decisión real del dueño):
+  41/42/43/47/49/50. Tarifas reales por mes y temporada — hoy
+      config.DEFAULT_RATES trae rangos ESTIMADOS, no los precios reales de
+      Leo. Cargarlos en la pestaña "4 · Tarifas" de la app.
+  34. Política de género en compartidas — hoy mixed_dorms=True (mixto) por
+      defecto en settings; falta que Leo decida si separa por género.
+  75. Google Calendar (sincronización real) — no implementado; requiere que
+      Leo cree credenciales OAuth en Google Cloud y decida 1 vía o 2 vías.
+  22/27. Segunda foto real por habitación (baño/vista) — el bot ya sabe
+      buscar `<foto>_2` / `_bath` / `_vista` (media_util.py), pero la
+      mayoría de las habitaciones todavía no tienen ese archivo.
+  28. Video corto (8-12s) de la pileta — no implementado, falta que Leo
+      grabe/mande el archivo.
+  (extra) Embed en vivo de Instagram (item 91 del mejoras.txt original,
+      "IG embed") — no implementado; falta elegir widget/API y que Leo dé
+      el ok de marca/usuario de Instagram a usar.
+  94. Lista real de 20 preguntas de huéspedes — hoy FAQ_TOPICS/HOSTEL_FAQ
+      tiene preguntas genéricas del rubro; falta que Leo pase las 20 reales
+      para afinar respuestas.
+  Ver también: desktop/SYNC_FOTOS.txt (dónde van las fotos nuevas de Leo).
+================================================================================
+
+Valizas Hostel — 100 mejoras para mañana
+========================================
+Fecha: 2026-07-30
+Foco: bot WhatsApp + app escritorio + operación real del hostel.
+Prioridad sugerida: P1 hoy primero · P2 después · P3 cuando haya tiempo.
+
+--------------------------------------------------------------------------------
+A. BOT WHATSAPP — CONVERSACIÓN (1–20)
+--------------------------------------------------------------------------------
+1. [P1] Probar de punta a punta con Leo: foto + duda + cotización + sí = reserva.
+2. [P1] Si el huésped manda solo “hola”, respuesta de 1 línea + “¿fechas y personas?”.
+3. [P1] No repetir el catálogo entero si ya lo vio hace < 5 minutos.
+4. [P1] Detectar “solo consulto” y nunca empujar a confirmar.
+5. [P1] Detectar “somos 2 adultos y 1 niño” y sumar bien la cantidad.
+6. [P2] Soporte fechas “este finde”, “puente”, “semana santa” (reglas + año).
+7. [P2] Soporte “noche del 10”, “salgo el 12” sin pedir formato ISO.
+8. [P2] Si piden 2 habitaciones, ofrecer flujo “grupo / dos cuartos”.
+9. [P2] Si piden 10 personas, sugerir combo concreto (ej. familiar + compartida).
+10. [P2] Recordar idioma: si escriben en inglés/portugués, responder en ese idioma.
+11. [P2] “Horario de check-in / check-out” respuesta fija corta.
+12. [P2] “¿Hay estacionamiento?” / pileta / desayuno / mascotas — FAQ del bot.
+13. [P2] “¿Dónde quedan?” — link Maps + 1 línea.
+14. [P2] Si no entiende, 1 línea: “Decime fechas, personas o el número de habitación”.
+15. [P2] Evitar que “3” sea personas cuando acaba de listar opciones 1–10.
+16. [P3] Resumen diario al dueño: “hoy X consultas, Y reservas, Z canceladas”.
+17. [P3] Modo “humano al mando”: pausar auto-reply por chat.
+18. [P3] Etiquetar chats: consulta / cotizado / reservado / perdido.
+19. [P3] Plantilla de upsell suave post-cotización (solo 1 vez).
+20. [P3] Cierre amable si el huésped dice “después te aviso”.
+
+--------------------------------------------------------------------------------
+B. FOTOS Y MULTIMEDIA (21–30)
+--------------------------------------------------------------------------------
+21. [P1] Verificar que cada habitación manda SU foto correcta (no genérica).
+22. [P1] Segunda foto opcional (baño / vista) si piden “más fotos”.
+23. [P2] Álbum corto: 2–3 fotos de la casa (pileta, frente, desayuno) con comando “casa”.
+24. [P2] Comprimir JPG a < 300 KB para envío más rápido por WA.
+25. [P2] Fallback si falta foto: avisar “ahora no tengo foto, te cuento…” + blurb.
+26. [P2] No reenviar la misma foto si ya la mandó hace < 10 min (salvo que la pidan).
+27. [P2] Foto de “Apart suite” vs “doble suite” bien diferenciadas.
+28. [P3] Video corto 8–12 s de la pileta (si Baileys lo banca estable).
+29. [P3] Watermark discreto “Valizas Hostel” en fotos enviadas por bot.
+30. [P3] Galería web sync: misma carpeta de fotos que usa el bot.
+
+--------------------------------------------------------------------------------
+C. COMPARTIDAS / CAMAS (31–40)
+--------------------------------------------------------------------------------
+31. [P1] Panel en la app: “Compartida 8 — ocupadas 3 / libres 5” por noche.
+32. [P1] Cotización dorm siempre aclara “precio por persona / cama”.
+33. [P1] Si piden “toda la compartida”, ofrecer precio de ocupación completa.
+34. [P2] No mezclar géneros si Leo define política (o avisar “mixto”).
+35. [P2] Bloquear overbooking por carrera: lock al confirmar cama.
+36. [P2] Vista calendario por cama (no solo por habitación) en compartidas.
+37. [P2] Al cancelar 2 camas, liberar exactamente esas 2.
+38. [P2] Mensaje claro: “reservás camas, no el cuarto entero”.
+39. [P3] Preferencia litera arriba/abajo (nota en la reserva).
+40. [P3] Lista de espera si la compartida está llena.
+
+--------------------------------------------------------------------------------
+D. PRECIOS Y TARIFAS (41–50)
+--------------------------------------------------------------------------------
+41. [P1] Cargar tarifas reales de Leo (no rangos inventados) mes a mes.
+42. [P1] Mostrar min–max solo si Leo quiere; si no, precio fijo.
+43. [P2] Temporada alta/media/baja con fechas exactas Uruguay.
+44. [P2] Cargo niño / cuna / cama extra configurable.
+45. [P2] Descuento estadía larga (ej. 7+ noches) opcional.
+46. [P2] Seña / señal: % o monto fijo, texto listo para WA.
+47. [P2] Cotizar en USD y mencionar “o equivalente pesos” si aplica.
+48. [P3] Exportar tarifas a la web (tarifas.html) desde la misma DB.
+49. [P3] Historial de cambios de precio (quién/cuándo).
+50. [P3] Alerta si cotizás por debajo del mínimo de temporada.
+
+--------------------------------------------------------------------------------
+E. APP ESCRITORIO — UX OPERADOR (51–65)
+--------------------------------------------------------------------------------
+51. [P1] Botón grande “Pausar respuestas automáticas”.
+52. [P1] Inbox: ver foto enviada + texto en el historial del chat.
+53. [P1] Editar borrador antes de mandar (modo semi-auto).
+54. [P2] Buscar reserva por nombre / teléfono / #id.
+55. [P2] Filtro calendario: solo confirmadas / solo compartidas.
+56. [P2] Click en reserva → ver chat WA relacionado.
+57. [P2] Notificación Windows al llegar mensaje nuevo.
+58. [P2] Estado bridge: verde/rojo + “reconectar” en 1 click.
+59. [P2] Backup DB con un botón (copiar .db a Escritorio).
+60. [P2] Restaurar backup.
+61. [P2] Log de errores del bot legible (sin stack eterno).
+62. [P3] Atajos teclado: R reserva, C cotizar, Esc cancelar modal.
+63. [P3] Tema claro opcional (ojo: no romper marca).
+64. [P3] Multi-usuario simple (Leo / Rubén) con iniciales en notas.
+65. [P3] Empaquetar EXE estable v0.4 con bridge incluido y Node check.
+
+--------------------------------------------------------------------------------
+F. RESERVAS Y DATOS (66–75)
+--------------------------------------------------------------------------------
+66. [P1] Campo teléfono normalizado (598…) en toda reserva WA.
+67. [P1] Evitar doble reserva si el huésped manda “sí” dos veces.
+68. [P2] Notas internas vs notas visibles al huésped.
+69. [P2] Estados: provisional / confirmada / checked-in / checked-out / no-show.
+70. [P2] Check-in digital: marcar llegada desde la app.
+71. [P2] Export CSV de reservas del mes.
+72. [P2] Impresión / PDF simple de voucher de reserva.
+73. [P3] Recordatorio automático 48 h antes (WA) si Leo lo activa.
+74. [P3] Pedido de reseña Google 24 h post check-out (opcional).
+75. [P3] Sincronizar con Google Calendar (solo lectura o 2 vías).
+
+--------------------------------------------------------------------------------
+G. IA (GROQ) — CONTROL (76–85)
+--------------------------------------------------------------------------------
+76. [P1] Nunca dejar que Groq invente precio: solo usar número de la app.
+77. [P1] Nunca dejar que Groq invente habitación si no la nombró el huésped.
+78. [P2] Prompt fijo: máximo 2 líneas en respuestas de dudas.
+79. [P2] Fallback 100 % reglas si Groq cae / rate limit.
+80. [P2] Log “engine: groq|rules” por mensaje para depurar.
+81. [P2] Lista blanca de datos que la IA puede mencionar (ficha ROOM_FACTS).
+82. [P2] Detectar tono enojado → ofrecer humano (“te paso con Leo”).
+83. [P3] Resumen de conversación larga en 3 bullets para el dueño.
+84. [P3] Traducción EN/PT con el mismo flujo de reserva.
+85. [P3] Test suite de 30 mensajes típicos (regression) antes de cada release.
+
+--------------------------------------------------------------------------------
+H. WEB PÚBLICA (86–93)
+--------------------------------------------------------------------------------
+86. [P2] Misma ficha de habitaciones (nombres Leo) en web y bot.
+87. [P2] CTA WhatsApp por habitación con texto prearmado + nombre de room.
+88. [P2] Tarifas web leídas de la misma fuente que la app (o export).
+89. [P2] FAQ pública alineada con respuestas del bot.
+90. [P3] Disponibilidad “orientativa” en web (sin overpromise).
+91. [P3] Open Graph bonito al compartir link en Instagram/WA.
+92. [P3] Página “cómo llegar” con tips Montevideo → Valizas.
+93. [P3] Lazy-load y WebP en todas las fotos pesadas.
+
+--------------------------------------------------------------------------------
+I. OPERACIÓN / NEGOCIO (94–100)
+--------------------------------------------------------------------------------
+94. [P1] Lista de 20 preguntas reales de huéspedes (Leo) → respuestas fijas.
+95. [P1] Definir política cancelación en 1 frase (bot + web).
+96. [P2] Horario en que el bot “duerme” y avisa “te respondemos a la mañana”.
+97. [P2] Número WA oficial único y visible en app/web (59894340425).
+98. [P2] Checklist apertura temporada: tarifas, fotos, bridge, backup.
+99. [P3] Tablero simple: ocupación %, ADR, ingresos semana.
+100. [P3] Manual de 1 página para Leo: “cómo usar el bot sin miedo”.
+
+--------------------------------------------------------------------------------
+Orden mañana (sugerido, 2–3 horas)
+----------------------------------
+1) #1 #21 #31 #41 #76  (confianza básica)
+2) #2 #4 #32 #51 #66 #67 #94 #95
+3) #22 #52 #53 #77 #79
+4) El resto P2 según lo que más duela en chats reales
+
+Fin.

@@ -25,14 +25,16 @@ dist-ssr
 
 .vercel
 downloads/
+public/assets/_inbox/
 cookies-instagram.txt
 *.cookies.txt
 .env
 .env.*
 !.env.example
 
-# Source dumps (organized copies live under public/assets/home|gallery|brand|…)
-public/assets/wa/
-public/assets/_preview/
-agent-tools/
-*.png.tmp
+# Desktop app build artifacts
+desktop/build/
+desktop/dist/
+desktop/data/
+desktop/**/__pycache__/
+

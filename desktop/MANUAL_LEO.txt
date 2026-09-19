@@ -1,0 +1,85 @@
+VALIZAS RESERVAS — MANUAL RÁPIDO (LEO)
+========================================
+Una hoja para tener a mano. Cualquier duda, avisale a quien te instaló la app.
+
+1) ABRIR LA APP
+----------------
+- Hacé doble clic en el ícono "Valizas Reservas" del escritorio.
+- Se abre una ventana con el calendario de reservas, el chat de WhatsApp y
+  la configuración. No hace falta internet para ver reservas ya cargadas,
+  pero sí para mandar/recibir WhatsApps.
+
+2) CONECTAR WHATSAPP (EL QR)
+------------------------------
+- Andá a la pestaña "Conexión WhatsApp (QR)".
+- Tocá "Conectar / Mostrar QR". Aparece un código cuadrado en pantalla.
+- Con el WhatsApp del hostel en el celular: Configuración > Dispositivos
+  vinculados > Vincular un dispositivo, y escaneá el QR de la pantalla.
+- Esto se hace UNA sola vez (o si algún día se desconecta solo). Después
+  queda conectado aunque cierres y abras la app.
+- Si el QR no aparece o se queda "esperando", cerrá la app y volvé a abrirla.
+
+3) EL BOT AUTOMÁTICO — CÓMO PAUSARLO
+--------------------------------------
+- La app puede responder sola por WhatsApp (cotiza, manda fotos, y si el
+  huésped dice "sí"/"confirmo", reserva sola).
+- En la pestaña de Configuración hay dos casilleros:
+    "Responder solo por WhatsApp con Groq"  → si lo DESMARCÁS, el bot deja
+      de escribir solo. Vos ves los mensajes igual, pero contestás vos.
+    "Reservar solo cuando llega un mensaje" → si lo DESMARCÁS, el bot puede
+      seguir charlando/cotizando pero NO va a crear la reserva solo.
+- Para frenar todo de golpe (por ejemplo, un fin de semana que estás vos
+  atendiendo en el mostrador): desmarcá los dos casilleros y tocá
+  "Guardar configuración".
+- Para volver a activarlo: marcá los dos de nuevo y guardá.
+
+4) CONFIRMAR UNA RESERVA
+---------------------------
+- El bot NUNCA reserva solo con una cotización: el huésped tiene que decir
+  algo como "sí", "confirmo" o "dale, reservo".
+- Recordá: UNA COTIZACIÓN (precio) NO ES UNA RESERVA. Podés ver precios
+  charlados por WhatsApp que después no se concretan; eso es normal.
+- Si vos querés cargar o confirmar una reserva a mano (por ejemplo, alguien
+  que llamó por teléfono), usá el botón "Nueva reserva" en el calendario y
+  completá nombre, habitación, fechas y personas.
+
+5) CANCELAR UNA RESERVA
+---------------------------
+- Por WhatsApp: si el huésped escribe "cancelar" o "cancelá mi reserva", el
+  bot busca su última reserva activa y la cancela solo, y le confirma.
+- A mano: en el calendario, hacé clic en la reserva y tocá "Cancelar".
+- Una reserva cancelada queda guardada en el historial (no se borra), por
+  las dudas.
+
+6) CAMAS EN HABITACIONES COMPARTIDAS
+----------------------------------------
+- Las habitaciones compartidas (4, 6 y 8 camas) se reservan POR CAMA, no
+  por habitación entera.
+- Ejemplo: si en "Compartida 8 camas" ya hay 3 camas reservadas y llega un
+  grupo de 5, entran justo; un grupo de 6 no entra (quedan 5 libres).
+- El sistema calcula esto solo y avisa si no hay camas suficientes; no hace
+  falta que lo controles a mano, pero es bueno saberlo si alguien pregunta
+  "¿está toda la habitación para mí?" — normalmente NO, salvo que se
+  reserven todas las camas de esa habitación para esas fechas.
+
+7) BACKUP (COPIA DE SEGURIDAD)
+----------------------------------
+- Todos los datos (reservas, precios, configuración) están en un solo
+  archivo: la carpeta "data" al lado de la app, adentro del archivo
+  "valizas_reservas.db".
+- Para hacer un backup: con la app cerrada, copiá toda la carpeta "data" a
+  un pendrive, Google Drive o WhatsApp a vos mismo, una vez por semana o
+  antes de temporada alta.
+- Si algo se rompe, se puede restaurar pegando esa carpeta "data" de vuelta
+  en su lugar (con la app cerrada).
+- La conexión de WhatsApp (el QR) vive en "data/wa-auth"; si hacés backup
+  de toda la carpeta "data" ya la incluye.
+
+RECORDATORIOS CLAVE
+-----------------------
+- Cotización ≠ reserva. Solo es reserva cuando el huésped confirma.
+- Compartidas se reservan por cama, no por habitación entera.
+- Para pausar el bot: desmarcá los dos casilleros de WhatsApp en
+  Configuración y guardá.
+- Hacé backup de la carpeta "data" seguido, sobre todo antes de temporada
+  alta (diciembre-febrero).

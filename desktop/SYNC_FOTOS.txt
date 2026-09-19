@@ -1,0 +1,43 @@
+Valizas Hostel — Sincronización de fotos de habitaciones
+=========================================================
+
+Hay DOS carpetas de fotos, cada una alimenta un sistema distinto:
+
+1) desktop/assets/rooms/
+   - La usa el BOT de WhatsApp (esta app de escritorio).
+   - De acá salen las fotos que se mandan por WhatsApp cuando alguien
+     pregunta por una habitación (foto principal + "más fotos").
+   - Nombre de archivo = el "photo" de cada habitación en desktop/app/config.py
+     (ROOMS), por ejemplo: Hab_Comp_8.jpg / Hab_Comp_8.webp.
+   - Para una foto extra de la misma habitación (baño, vista, ángulo 2), se
+     puede agregar con el mismo nombre + sufijo: _2, _bath o _vista
+     (ej: Hab_Fam_2.jpg, Hab_Priv_2_vista.jpg). Ver desktop/app/media_util.py.
+   - Formato preferido: .jpg (más liviano y compatible con WhatsApp). El bot
+     también acepta .jpeg/.png/.webp si no hay .jpg.
+
+2) public/assets/rooms/  (y su copia en dist/assets/rooms/ tras el build)
+   - La usa la WEB (hostel-valizas.vercel.app) — habitaciones.html, home, etc.
+   - Los mismos nombres de archivo (Hab_Comp_8.jpg, Hab_Comp_8.webp, etc.) se
+     referencian desde src/siteImages.js / src/main.js.
+
+--------------------------------------------------------------------------
+IMPORTANTE: cuando Leo mande fotos nuevas o reemplace una, hay que copiarlas
+A LAS DOS CARPETAS con el MISMO nombre de archivo:
+
+  desktop/assets/rooms/<nombre>.jpg   (para que el bot la mande por WhatsApp)
+  public/assets/rooms/<nombre>.jpg    (para que se vea en la web)
+
+Si solo se copia a una de las dos, el bot y la web quedan desincronizados
+(por ejemplo: la web muestra la foto nueva pero el bot sigue mandando la
+vieja, o viceversa).
+
+Checklist rápido al recibir fotos nuevas de Leo:
+  [ ] Guardar en desktop/assets/rooms/ con el nombre de la habitación
+  [ ] Guardar la misma foto en public/assets/rooms/ con el mismo nombre
+  [ ] Si es .jpg, generar también un .webp liviano para la web (opcional
+      pero recomendado para que cargue más rápido)
+  [ ] Probar en el bot: pedir "fotos" de esa habitación por WhatsApp
+  [ ] Probar en la web: abrir /habitaciones y mirar la ficha de esa pieza
+  [ ] Si hace falta, correr `npm run build` para que dist/ tome la foto nueva
+
+Fin.

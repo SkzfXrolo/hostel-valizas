@@ -1,23 +1,27 @@
-const SITE = 'https://hostel-valizas.vercel.app'
-const OG_IMAGE = `${SITE}/assets/hero-1.webp`
+import { getSiteUrl } from './siteConfig.js'
 
 const PAGE_META = {
   home: {
     title: 'Valizas Hostel | Barra de Valizas',
     description:
-      'Hostel boutique a 100 m del mar en Barra de Valizas, Rocha. Suites, dormis, pileta y reservas por WhatsApp.',
+      'Hostel boutique a 100 m del mar en Barra de Valizas, Rocha. Habitaciones, dormis, pileta y reservas por WhatsApp.',
   },
   nosotros: {
     title: 'Nosotros | Valizas Hostel',
-    description: 'Conocé a los anfitriones de Valizas Hostel Boutique & Suites en Barra de Valizas.',
+    description: 'Conocé a los anfitriones de Valizas Hostel Boutique en Barra de Valizas.',
   },
   habitaciones: {
     title: 'Habitaciones | Valizas Hostel',
-    description: 'Suites, dobles privadas y dormis de 4 a 12 camas. Desayuno incluido.',
+    description: 'Habitaciones, dobles privadas y dormis de 4 a 12 camas. Desayuno incluido.',
   },
   experiencias: {
     title: 'Experiencias | Valizas Hostel',
     description: 'Pileta, Bora Beer, dunas y Cabo Polonio desde Valizas Hostel.',
+  },
+  sushi: {
+    title: 'Sushi Valizas | Come rico, come local',
+    description:
+      'Sushi Valizas — nigiri, rolls y hot rolls en Barra de Valizas. 10% de descuento para huéspedes del hostel.',
   },
   tarifas: {
     title: 'Tarifas | Valizas Hostel',
@@ -71,6 +75,8 @@ function upsertLink(rel, href) {
 }
 
 export function setupSeo() {
+  const SITE = getSiteUrl()
+  const OG_IMAGE = `${SITE}/assets/home/hero-pool.webp`
   const page = document.body.dataset.page || 'home'
   const meta = PAGE_META[page] || PAGE_META.home
   const path = page === 'home' ? '/' : `/${page === '404' ? '' : page}`
@@ -90,6 +96,10 @@ export function setupSeo() {
   upsertMeta('name', 'twitter:image', OG_IMAGE)
   upsertLink('canonical', url)
 
+  document.querySelectorAll('[data-site-url]').forEach((el) => {
+    el.textContent = SITE
+  })
+
   if (page === 'home' && !document.getElementById('hotel-schema')) {
     const script = document.createElement('script')
     script.type = 'application/ld+json'
@@ -97,11 +107,11 @@ export function setupSeo() {
     script.textContent = JSON.stringify({
       '@context': 'https://schema.org',
       '@type': 'Hostel',
-      name: 'Valizas Hostel Boutique & Suites',
+      name: 'Valizas Hostel Boutique',
       description: meta.description,
       url: SITE,
       image: OG_IMAGE,
-      telephone: '+59894925782',
+      telephone: '+59894340425',
       email: 'hostelvalizas@hotmail.com',
       address: {
         '@type': 'PostalAddress',
